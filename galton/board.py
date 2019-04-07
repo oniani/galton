@@ -10,19 +10,18 @@ class Board(list):
     This class implements a galton board
     for particles.
     """
-    def __init__(self, slots_number: int) -> None:
-        self._slots_number = slots_number
-        self._slots = [0] * slots_number
-        self._levels_number = slots_number // 2
-        self._particles_number = sum(self._slots)
+    def __init__(self, size: int) -> None:
+        self._size = size
+        self._slots = [0] * size
+        self._levels_number = size // 2
 
-    def get_slots_number(self) -> int:
-        return self._slots_number
+    def get_size(self) -> int:
+        return self._size
 
-    def set_slots_number(self, new_slots_number: int) -> None:
-        self._slots_number = [0] * new_slots_number
+    def set_size(self, new_size: int) -> None:
+        self._size = [0] * new_size
 
-    slots_number = property(get_slots_number, set_slots_number)
+    size = property(get_size, set_size)
 
     def get_levels_number(self) -> int:
         return self._levels_number
@@ -40,20 +39,18 @@ class Board(list):
 
     slots = property(get_slots, set_slots)
 
-    def get_particles_number(self) -> int:
-        return self._particles_number
-
-    def set_particles_number(self, new_particles_number: int) -> None:
-        self._particles_number = new_particles_number
-
-    particles_number = property(get_particles_number, set_particles_number)
-
     def __getitem__(self, index: int) -> int:
         return self._slots[index]
 
     def __setitem__(self, index: int, new_value: int) -> None:
         self._slots[index] = new_value
-        self._particles_number = sum(self._slots)
 
     def __str__(self) -> None:
-        return str(self._slots)
+        result = "\033[41m|\033[0m"
+        for slot in self._slots:
+            result += f" \033[34m{slot} \033[41m|\033[0m"
+        return result
+    
+    @property
+    def number_of_particles(self) -> int:
+        return sum(self._slots)

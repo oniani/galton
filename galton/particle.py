@@ -47,22 +47,38 @@ class Particle(threading.Thread):
         Move one place to the left if the particle
         is not at the leftmost cell. Move to the
         right if the particle is at the leftmost cell.
+
+        NOTE: If there is no lock, 'move_left' does
+        a simple move. Otherwise, it uses a lock to
+        do the move. This is handy for seeing the
+        intermediate results.
         """
-        if self._position == 0:
-            self._position = 1
-        else:
-            self._position -= 1
+        with threading.Lock():
+            self._board[self._position] -= 1
+            if self._position == 0:
+                self._position = 1
+            else:
+                self._position -= 1
+            self._board[self._position] += 1
 
     def move_right(self) -> None:
         """
         Move one place to the right if the particle
         is not at the rightmost cell. Move to the
         left if the particle is at the rightmost cell.
+
+        NOTE: If there is no lock, 'move_right' does
+        a simple move. Otherwise, it uses a lock to
+        do the move. This is handy for seeing the
+        intermediate results.
         """
-        if self._position == self._board.slots_number - 1:
-            self._position = self._board._slots_number - 2
-        else:
-            self._position += 1
+        with threading.Lock():
+            self._board[self._position] -= 1
+            if self._position == self._board.size - 1:
+                self._position = self._board.size - 2
+            else:
+                self._position += 1
+            self._board[self._position] += 1
 
     def in_between(self) -> None:
         """
@@ -108,7 +124,14 @@ class Particle(threading.Thread):
     def move_random(self) -> None:
         """
         Make a random move either to the left, to the right,
-        or stay at the same position.
+        or stay at the same position. Note that the randomization
+        has weights. This is due to how the probabilities will
+        be arranged. We have 1/4 of the probability that the particle
+        will end up on the left peg, 0.25 that it will end up on the
+        right peg, and 1/4 + 1/4 = 0.5 probability that it will end up
+        not moving horizontally (notice that even though the particle
+        does not move horizontally, it obviously does move vertically as
+        it goes down the levels of pegs).
         """
         direction = random.choices(['move_left', 'move_right', 'in_between'],
                                    weights=[0.25, 0.25, 0.5],
@@ -128,4 +151,4 @@ class Particle(threading.Thread):
         """
         for _ in range(self._board.levels_number):
             self.move_random()
-            time.sleep(0.00025)
+            time.sleep(0.00025)  # This is not required, but recommended
