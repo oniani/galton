@@ -50,7 +50,7 @@ class Board(list):
         for slot in self._slots:
             result += f" \033[34m{slot} \033[41m|\033[0m"
         return result
-    
+
     @property
     def number_of_particles(self) -> int:
         return sum(self._slots)

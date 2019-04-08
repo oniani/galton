@@ -33,7 +33,7 @@ def main():
     parser = argparse.ArgumentParser(description='Process the arguments.')
 
     # Number of slots in the Galton board
-    parser.add_argument('--size',
+    parser.add_argument('--slots',
                         type=int,
                         default=11,
                         help='number of slots in the Galton board')
@@ -67,32 +67,42 @@ def main():
                         help='do not show the intermediate results')
     parser.set_defaults(intermediate=False)
 
+    # Matplotlib output
+    parser.add_argument('--plot',
+                        action='store_true',
+                        help='show the plot')
+    parser.add_argument('--no-plot',
+                        action='store_false',
+                        help='do not show the plot')
+    parser.set_defaults(intermediate=False)
+
     # Get the argparse.Namespace class to obtain the values of the arguments
     args = parser.parse_args()
 
     # Print out the possible warning messages
     def warning(message): print(f"\033[93m{message}\033[0m")
 
-    if args.start != args.size // 2:
+    if args.start != args.slots // 2:
         warning("Simulation incomplete, position-cell mismatch.\n")
 
     elif args.start != args.levels:
         warning("Incomplete simulation, position-level mismatch.\n")
 
-    elif args.size // 2 != args.levels:
+    elif args.slots // 2 != args.levels:
         warning("Simulation incomplete, cell-level mismatch.\n")
 
     # Print the message
     print("\033[92mThe simulation has started!\033[0m\n\n"
           "\033[4mInformation\033[0m\n"
           f"NUMBER OF PARTICLES:         {args.particles}\n"
-          f"NUMBER OF SLOTS:             {args.size}\n"
+          f"NUMBER OF SLOTS:             {args.slots}\n"
           f"START POSITION:              {args.start}\n"
           f"NUMBER OF LEVELS:            {args.levels}\n"
-          f"INTERMEDIATE RESULTS:        {args.intermediate}\n")
+          f"INTERMEDIATE RESULTS:        {args.intermediate}\n"
+          f"PLOT:                        {args.plot}\n")
 
     # A Galton board
-    board = Board(args.size)
+    board = Board(args.slots)
 
     # This is a promise that if nothing happens, every particle
     # will end up in the middle slot
@@ -126,20 +136,21 @@ def main():
             particle.join()
 
         # Print out board filled with particles
-        print("FINAL BOARD:".ljust(22), board)
+        print("FINAL BOARD:".ljust(28), board)
 
     # Verify that all the particles fell into some cell
     assert board.number_of_particles == args.particles
 
-    # Plot the bar chart
-    plt.bar(list(range(args.size)), board.slots, align='center', alpha=0.5)
-    plt.xticks(range(args.size))
-    plt.yticks(board)
-    plt.title(f"Galton board simulation using {args.particles} "
-              "threaded particles")
-    plt.xlabel("Cell Number")
-    plt.ylabel("Particle Number")
-    plt.show()
+    if args.plot:
+        # Plot the bar chart
+        plt.bar(list(range(args.slots)), board.slots, align='center', alpha=0.5)
+        plt.xticks(range(args.slots))
+        plt.yticks(board.slots)
+        plt.title(f"Galton board simulation using {args.particles} "
+                "threaded particles")
+        plt.xlabel("Cell Number")
+        plt.ylabel("Particle Number")
+        plt.show()
 
 
 if __name__ == "__main__":

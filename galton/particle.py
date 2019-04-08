@@ -16,17 +16,17 @@ class Particle(threading.Thread):
     This class implements a particle thread that operates
     on the board with the given number of slots and levels.
     """
-    def __init__(self, name: str, position: int, board: Board):
+    def __init__(self, name: str, position: int, board: Board) -> None:
         threading.Thread.__init__(self, target=self.run)
         self._name = name
         self._position = position
         self._board = board
 
-    def get_name(self):
+    def get_name(self) -> str:
         """Get the name of the particle."""
         return self._name
 
-    def set_name(self, new_name: str):
+    def set_name(self, new_name: str) -> None:
         """Set the name of the particle."""
         self.name = new_name
 
@@ -48,10 +48,8 @@ class Particle(threading.Thread):
         is not at the leftmost cell. Move to the
         right if the particle is at the leftmost cell.
 
-        NOTE: If there is no lock, 'move_left' does
-        a simple move. Otherwise, it uses a lock to
-        do the move. This is handy for seeing the
-        intermediate results.
+        NOTE: 'move_left' uses a lock to do the move.
+        This is handy for seeing the intermediate results.
         """
         with threading.Lock():
             self._board[self._position] -= 1
@@ -67,10 +65,8 @@ class Particle(threading.Thread):
         is not at the rightmost cell. Move to the
         left if the particle is at the rightmost cell.
 
-        NOTE: If there is no lock, 'move_right' does
-        a simple move. Otherwise, it uses a lock to
-        do the move. This is handy for seeing the
-        intermediate results.
+        NOTE: 'move_right' uses a lock to do the move.
+        This is handy for seeing the intermediate results.
         """
         with threading.Lock():
             self._board[self._position] -= 1
