@@ -13,7 +13,7 @@ class Board(list):
     def __init__(self, size: int) -> None:
         self._size = size
         self._slots = [0] * size
-        self._levels_number = size // 2
+        self._levels = size // 2
 
     def get_size(self) -> int:
         return self._size
@@ -23,13 +23,13 @@ class Board(list):
 
     size = property(get_size, set_size)
 
-    def get_levels_number(self) -> int:
-        return self._levels_number
+    def get_levels(self) -> int:
+        return self._levels
 
-    def set_levels_number(self, new_levels_number: int) -> None:
-        self.levels_number = new_levels_number
+    def set_levels(self, new_levels: int) -> None:
+        self._levels = new_levels
 
-    levels_number = property(get_levels_number, set_levels_number)
+    levels = property(get_levels, set_levels)
 
     def get_slots(self) -> list:
         return self._slots

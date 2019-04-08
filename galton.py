@@ -123,7 +123,7 @@ def main():
         for particle in particles:
             particle.join()
 
-        # Print out board filled with particles
+        # Print out the board filled with particles
         print(board)
 
     else:
@@ -135,7 +135,7 @@ def main():
         for particle in particles:
             particle.join()
 
-        # Print out board filled with particles
+        # Print out the board filled with particles
         print("FINAL BOARD:".ljust(28), board)
 
     # Verify that all the particles fell into some cell
@@ -143,11 +143,11 @@ def main():
 
     if args.plot:
         # Plot the bar chart
-        plt.bar(list(range(args.slots)), board.slots, align='center', alpha=0.5)
+        plt.bar(range(args.slots), board.slots, align='center', alpha=0.5)
         plt.xticks(range(args.slots))
         plt.yticks(board.slots)
         plt.title(f"Galton board simulation using {args.particles} "
-                "threaded particles")
+                  "threaded particles")
         plt.xlabel("Cell Number")
         plt.ylabel("Particle Number")
         plt.show()

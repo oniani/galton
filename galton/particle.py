@@ -145,6 +145,6 @@ class Particle(threading.Thread):
         This method has to be overriden as indicated in
         the documentation of the threading module.
         """
-        for _ in range(self._board.levels_number):
+        for _ in range(self._board.levels):
             self.move_random()
             time.sleep(0.00025)  # This is not required, but recommended
