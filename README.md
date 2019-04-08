@@ -1,4 +1,4 @@
-<p align="center" style="font-weight:bold; font-size:1.5em">Galton Board Simulations Using Multithreading</p>
+<p align="center" style="font-weight:bold; font-size:2em">Galton Board Simulations Using Multithreading</p>
 
 <p align="center"><img src="./images/galton_board.png"></p>
 
@@ -60,6 +60,10 @@ more normal. This is a visual proof of what is called Central Limit Theorem or C
 1. The mean gets closer to the center
 2. The spread decreases
 3. The distribution gets approximately normal
+
+### Dependencies
+* `Python 3.6+`
+    * `Matplotlib`
 
 ### References
 1. [Galton Board -- from Wolfram MathWorld](http://mathworld.wolfram.com/GaltonBoard.html)

@@ -1,5 +1,5 @@
 """
-Galton board simulation using multithreading
+Galton board simulations using multithreading
 
 Author: David Oniani
 Date: 04/05/2019
