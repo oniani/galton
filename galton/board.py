@@ -1,7 +1,9 @@
 """
 Board module
+
 Author: David Oniani
-License: MIT
+Date: 04/05/2019
+License: GNU General Public License v3.0
 """
 
 
