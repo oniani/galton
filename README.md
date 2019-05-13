@@ -66,4 +66,4 @@ more normal. This is a visual proof of what is called Central Limit Theorem or C
     * `Matplotlib`
 
 ### References
-1. [Galton Board -- from Wolfram MathWorld](http://mathworld.wolfram.com/GaltonBoard.html)
+[1] [Galton Board -- from Wolfram MathWorld](http://mathworld.wolfram.com/GaltonBoard.html)
