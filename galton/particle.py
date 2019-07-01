@@ -18,6 +18,7 @@ class Particle(threading.Thread):
     This class implements a particle thread that operates
     on the board with the given number of slots and levels.
     """
+
     def __init__(self, name: str, position: int, board: Board) -> None:
         threading.Thread.__init__(self, target=self.run)
         self._name = name
@@ -131,13 +132,15 @@ class Particle(threading.Thread):
         does not move horizontally, it obviously does move vertically as
         it goes down the levels of pegs).
         """
-        direction = random.choices(['move_left', 'move_right', 'in_between'],
-                                   weights=[0.25, 0.25, 0.5],
-                                   k=1)[0]
+        direction = random.choices(
+            ["move_left", "move_right", "in_between"],
+            weights=[0.25, 0.25, 0.5],
+            k=1,
+        )[0]
 
-        if direction == 'move_left':
+        if direction == "move_left":
             self.move_left()
-        elif direction == 'move_right':
+        elif direction == "move_right":
             self.move_right()
         else:
             self.in_between()

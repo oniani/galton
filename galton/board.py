@@ -12,6 +12,7 @@ class Board(list):
     This class implements a galton board
     for particles.
     """
+
     def __init__(self, size: int) -> None:
         self._size = size
         self._slots = [0] * size

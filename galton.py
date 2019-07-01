@@ -30,57 +30,62 @@ from galton.board import Board
 def main():
     """The main function."""
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description='Process the arguments.')
+    parser = argparse.ArgumentParser(description="Process the arguments.")
 
     # Number of slots in the Galton board
-    parser.add_argument('--slots',
-                        type=int,
-                        default=11,
-                        help='number of slots in the Galton board')
+    parser.add_argument(
+        "--slots",
+        type=int,
+        default=11,
+        help="number of slots in the Galton board",
+    )
 
     # Number of particles in the simulation
-    parser.add_argument('--particles',
-                        type=int,
-                        default=1000,
-                        help='number of beans in the simulation')
+    parser.add_argument(
+        "--particles",
+        type=int,
+        default=1000,
+        help="number of beans in the simulation",
+    )
 
     # Default start position for the particle
-    parser.add_argument('--start',
-                        type=int,
-                        default=5,
-                        help='start position of the particle')
+    parser.add_argument(
+        "--start", type=int, default=5, help="start position of the particle"
+    )
 
     # Number of levels of pegs
-    parser.add_argument('--levels',
-                        type=int,
-                        default=5,
-                        help='number of levels of pegs')
+    parser.add_argument(
+        "--levels", type=int, default=5, help="number of levels of pegs"
+    )
 
     # Number of levels of pegs
     # Note that levels are paired meaning that 10 rows
     # of the pegs are 5 levels (see 'in_between' implementation for reference)
-    parser.add_argument('--intermediate',
-                        action='store_true',
-                        help='show the intermediate results')
-    parser.add_argument('--no-intermediate',
-                        action='store_false',
-                        help='do not show the intermediate results')
+    parser.add_argument(
+        "--intermediate",
+        action="store_true",
+        help="show the intermediate results",
+    )
+    parser.add_argument(
+        "--no-intermediate",
+        action="store_false",
+        help="do not show the intermediate results",
+    )
     parser.set_defaults(intermediate=False)
 
     # Matplotlib output
-    parser.add_argument('--plot',
-                        action='store_true',
-                        help='show the plot')
-    parser.add_argument('--no-plot',
-                        action='store_false',
-                        help='do not show the plot')
+    parser.add_argument("--plot", action="store_true", help="show the plot")
+    parser.add_argument(
+        "--no-plot", action="store_false", help="do not show the plot"
+    )
     parser.set_defaults(intermediate=False)
 
     # Get the argparse.Namespace class to obtain the values of the arguments
     args = parser.parse_args()
 
     # Print out the possible warning messages
-    def warning(message): print(f"\033[93m{message}\033[0m")
+    def warning(message):
+        print(f"\033[93m{message}\033[0m")
 
     if args.start != args.slots // 2:
         warning("Simulation incomplete, position-cell mismatch.\n")
@@ -92,14 +97,16 @@ def main():
         warning("Simulation incomplete, cell-level mismatch.\n")
 
     # Print the message
-    print("\033[92mThe simulation has started!\033[0m\n\n"
-          "\033[4mInformation\033[0m\n"
-          f"NUMBER OF PARTICLES:         {args.particles}\n"
-          f"NUMBER OF SLOTS:             {args.slots}\n"
-          f"START POSITION:              {args.start}\n"
-          f"NUMBER OF LEVELS:            {args.levels}\n"
-          f"INTERMEDIATE RESULTS:        {args.intermediate}\n"
-          f"PLOT:                        {args.plot}\n")
+    print(
+        "\033[92mThe simulation has started!\033[0m\n\n"
+        "\033[4mInformation\033[0m\n"
+        f"NUMBER OF PARTICLES:         {args.particles}\n"
+        f"NUMBER OF SLOTS:             {args.slots}\n"
+        f"START POSITION:              {args.start}\n"
+        f"NUMBER OF LEVELS:            {args.levels}\n"
+        f"INTERMEDIATE RESULTS:        {args.intermediate}\n"
+        f"PLOT:                        {args.plot}\n"
+    )
 
     # A Galton board
     board = Board(args.slots)
@@ -109,9 +116,10 @@ def main():
     board[board.size // 2] = args.particles
 
     # A list for threads
-    particles = [Particle(f"p{index}", args.start, board)
-                 for index
-                 in range(args.particles)]
+    particles = [
+        Particle(f"p{index}", args.start, board)
+        for index in range(args.particles)
+    ]
 
     if args.intermediate:
         # Start the threads
@@ -143,11 +151,13 @@ def main():
 
     if args.plot:
         # Plot the bar chart
-        plt.bar(range(args.slots), board.slots, align='center', alpha=0.5)
+        plt.bar(range(args.slots), board.slots, align="center", alpha=0.5)
         plt.xticks(range(args.slots))
         plt.yticks(board.slots)
-        plt.title(f"Galton board simulation using {args.particles} "
-                  "threaded particles")
+        plt.title(
+            f"Galton board simulation using {args.particles} "
+            "threaded particles"
+        )
         plt.xlabel("Cell Number")
         plt.ylabel("Particle Number")
         plt.show()

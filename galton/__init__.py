@@ -9,4 +9,4 @@ License: GNU General Public License v3.0
 from galton.particle import Particle
 from galton.board import Board
 
-__all__ = ['Particle', 'Board']
+__all__ = ["Particle", "Board"]
