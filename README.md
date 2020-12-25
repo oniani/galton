@@ -67,4 +67,4 @@ more normal. This is a visual proof of what is called Central Limit Theorem or C
 [1] [Galton Board -- from Wolfram MathWorld](http://mathworld.wolfram.com/GaltonBoard.html)
 
 ## License
-[GNU General Public License v3.0](LICENSE)
+[MIT License](LICENSE)
