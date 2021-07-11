@@ -20,9 +20,10 @@ License: MIT License
             |___|___|___|___|___|___|___|___|___|___|___|
 """
 
-
 import argparse
+
 import matplotlib.pyplot as plt
+
 from galton.particle import Particle
 from galton.board import Board
 
@@ -49,14 +50,10 @@ def main():
     )
 
     # Default start position for the particle
-    parser.add_argument(
-        "--start", type=int, default=5, help="start position of the particle"
-    )
+    parser.add_argument("--start", type=int, default=5, help="start position of the particle")
 
     # Number of levels of pegs
-    parser.add_argument(
-        "--levels", type=int, default=5, help="number of levels of pegs"
-    )
+    parser.add_argument("--levels", type=int, default=5, help="number of levels of pegs")
 
     # Number of levels of pegs
     # Note that levels are paired meaning that 10 rows
@@ -75,9 +72,7 @@ def main():
 
     # Matplotlib output
     parser.add_argument("--plot", action="store_true", help="show the plot")
-    parser.add_argument(
-        "--no-plot", action="store_false", help="do not show the plot"
-    )
+    parser.add_argument("--no-plot", action="store_false", help="do not show the plot")
     parser.set_defaults(intermediate=False)
 
     # Get the argparse.Namespace class to obtain the values of the arguments
@@ -116,10 +111,7 @@ def main():
     board[board.size // 2] = args.particles
 
     # A list for threads
-    particles = [
-        Particle(f"p{index}", args.start, board)
-        for index in range(args.particles)
-    ]
+    particles = [Particle(f"p{index}", args.start, board) for index in range(args.particles)]
 
     if args.intermediate:
         # Start the threads
@@ -154,10 +146,7 @@ def main():
         plt.bar(range(args.slots), board.slots, align="center", alpha=0.5)
         plt.xticks(range(args.slots))
         plt.yticks(board.slots)
-        plt.title(
-            f"Galton board simulation using {args.particles} "
-            "threaded particles"
-        )
+        plt.title(f"Galton board simulation using {args.particles} " "threaded particles")
         plt.xlabel("Cell Number")
         plt.ylabel("Particle Number")
         plt.show()
