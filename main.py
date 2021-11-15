@@ -4,8 +4,7 @@ import logging
 
 import matplotlib.pyplot as plt
 
-from galton import Board
-from galton import Particle
+from galton import Board, Particle
 
 
 def parse_args() -> argparse.Namespace:
@@ -26,64 +25,49 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     """Performs Galton board simulations."""
 
-    # Get the command line arguments
     args = parse_args()
 
-    # Issue warnings based on input parameters
     if args.start != args.slots // 2:
-        logging.warning("Simulation incomplete, position-cell mismatch.")
+        logging.warning("Simulation incomplete, position-cell mismatch")
     elif args.start != args.levels:
-        logging.warning("Incomplete simulation, position-level mismatch.")
+        logging.warning("Incomplete simulation, position-level mismatch")
     elif args.slots // 2 != args.levels:
-        logging.warning("Simulation incomplete, cell-level mismatch.")
+        logging.warning("Simulation incomplete, cell-level mismatch")
 
     logging.info("The simulation has started!")
     logging.info(f"Parameters: {args}")
 
-    # A Galton board
+    # NOTE: If nothing happens, every particle will end up in `args.start` position
     board = Board(args.slots)
-
-    # A promise that if nothing happens, every particle will end up in the middle slot
-    board[board.size // 2] = args.particles
-
-    # A list containing particle threads
+    board[args.start] = args.particles
     particles = [Particle(board, f"p{index}", args.start) for index in range(args.particles)]
 
+    # Start the threads and optionally, log the results
     if args.intermediate:
-        # Start the threads
         for particle in particles:
             particle.start()
             logging.info(board)
-
-        # Wait till completion
-        for particle in particles:
-            particle.join()
-
-        logging.info(board)
-
     else:
-        # Start the threads
         for particle in particles:
             particle.start()
 
-        # Wait till completion
-        for particle in particles:
-            particle.join()
+    # Wait till completion
+    for particle in particles:
+        particle.join()
 
-        logging.info(f"Final board: {board}")
+    logging.info(f"Final board: {board}")
 
-    # Verify that all the particles fell into some cell
+    # Verify that every particles fell into some cell
     assert board.particles == args.particles
 
-    # Plot the bar chart
     if args.plot:
         plt.style.use("ggplot")
         plt.bar(range(args.slots), board.slots, align="center", alpha=0.8)
         plt.xticks(range(args.slots))
         plt.yticks(board.slots)
-        plt.title(f"Galton board simulation using {args.particles} threaded particles")
         plt.xlabel("Slot")
         plt.ylabel("Particle")
+        plt.title(f"Galton board simulation using {args.particles} threaded particles")
         plt.show()
 
 
