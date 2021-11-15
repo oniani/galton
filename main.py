@@ -1,156 +1,96 @@
-"""
-Galton board simulations using multithreading
-
-Author: David Oniani
-Date: 04/05/2019
-License: MIT License
-
-                        G A L T O N  B O A R D
-
-        0                         *
-                                *   *
-        1                     *   *   *
-                            *   *   *   *
-        3                 *   *   *   *   *
-                        *   *   *   *   *   *
-        4             *   *   *   *   *   *   *
-                    *   *   *   *   *   *   *   *
-        5         *   *   *   *   *   *   *   *   *
-                *   *   *   *   *   *   *   *   *   *
-            |___|___|___|___|___|___|___|___|___|___|___|
-"""
-
+#!/usr/bin/env python3
 import argparse
+import logging
 
 import matplotlib.pyplot as plt
 
-from galton.particle import Particle
-from galton.board import Board
+from galton import Board
+from galton import Particle
 
 
-def main():
-    """The main function."""
-    # Parse command-line arguments
+def parse_args() -> argparse.Namespace:
+    """Parses the command line arguments."""
+
     parser = argparse.ArgumentParser(description="Process the arguments.")
 
-    # Number of slots in the Galton board
-    parser.add_argument(
-        "--slots",
-        type=int,
-        default=11,
-        help="number of slots in the Galton board",
-    )
+    parser.add_argument("--intermediate", action="store_true", help="log intermediate results")
+    parser.add_argument("--levels", type=int, default=5, help="number of levels")
+    parser.add_argument("--particles", type=int, default=1000, help="number of particles")
+    parser.add_argument("--plot", action="store_true", help="plot the bar chart of results")
+    parser.add_argument("--slots", type=int, default=11, help="number of slots")
+    parser.add_argument("--start", type=int, default=5, help="particle start position")
 
-    # Number of particles in the simulation
-    parser.add_argument(
-        "--particles",
-        type=int,
-        default=1000,
-        help="number of beans in the simulation",
-    )
+    return parser.parse_args()
 
-    # Default start position for the particle
-    parser.add_argument("--start", type=int, default=5, help="start position of the particle")
 
-    # Number of levels of pegs
-    parser.add_argument("--levels", type=int, default=5, help="number of levels of pegs")
+def main() -> None:
+    """Performs Galton board simulations."""
 
-    # Number of levels of pegs
-    # Note that levels are paired meaning that 10 rows
-    # of the pegs are 5 levels (see 'in_between' implementation for reference)
-    parser.add_argument(
-        "--intermediate",
-        action="store_true",
-        help="show the intermediate results",
-    )
-    parser.add_argument(
-        "--no-intermediate",
-        action="store_false",
-        help="do not show the intermediate results",
-    )
-    parser.set_defaults(intermediate=False)
+    # Get the command line arguments
+    args = parse_args()
 
-    # Matplotlib output
-    parser.add_argument("--plot", action="store_true", help="show the plot")
-    parser.add_argument("--no-plot", action="store_false", help="do not show the plot")
-    parser.set_defaults(intermediate=False)
-
-    # Get the argparse.Namespace class to obtain the values of the arguments
-    args = parser.parse_args()
-
-    # Print out the possible warning messages
-    def warning(message):
-        print(f"\033[93m{message}\033[0m")
-
+    # Issue warnings based on input parameters
     if args.start != args.slots // 2:
-        warning("Simulation incomplete, position-cell mismatch.\n")
-
+        logging.warning("Simulation incomplete, position-cell mismatch.")
     elif args.start != args.levels:
-        warning("Incomplete simulation, position-level mismatch.\n")
-
+        logging.warning("Incomplete simulation, position-level mismatch.")
     elif args.slots // 2 != args.levels:
-        warning("Simulation incomplete, cell-level mismatch.\n")
+        logging.warning("Simulation incomplete, cell-level mismatch.")
 
-    # Print the message
-    print(
-        "\033[92mThe simulation has started!\033[0m\n\n"
-        "\033[4mInformation\033[0m\n"
-        f"NUMBER OF PARTICLES:         {args.particles}\n"
-        f"NUMBER OF SLOTS:             {args.slots}\n"
-        f"START POSITION:              {args.start}\n"
-        f"NUMBER OF LEVELS:            {args.levels}\n"
-        f"INTERMEDIATE RESULTS:        {args.intermediate}\n"
-        f"PLOT:                        {args.plot}\n"
-    )
+    logging.info("The simulation has started!")
+    logging.info(f"Parameters: {args}")
 
     # A Galton board
     board = Board(args.slots)
 
-    # This is a promise that if nothing happens, every particle
-    # will end up in the middle slot
+    # A promise that if nothing happens, every particle will end up in the middle slot
     board[board.size // 2] = args.particles
 
-    # A list for threads
-    particles = [Particle(f"p{index}", args.start, board) for index in range(args.particles)]
+    # A list containing particle threads
+    particles = [Particle(board, f"p{index}", args.start) for index in range(args.particles)]
 
     if args.intermediate:
         # Start the threads
         for particle in particles:
             particle.start()
-            print(board)
+            logging.info(board)
 
-        # Ensure all of the threads have finished
+        # Wait till completion
         for particle in particles:
             particle.join()
 
-        # Print out the board filled with particles
-        print(board)
+        logging.info(board)
 
     else:
         # Start the threads
         for particle in particles:
             particle.start()
 
-        # Ensure all of the threads have finished
+        # Wait till completion
         for particle in particles:
             particle.join()
 
-        # Print out the board filled with particles
-        print("FINAL BOARD:".ljust(28), board)
+        logging.info(f"Final board: {board}")
 
     # Verify that all the particles fell into some cell
-    assert board.number_of_particles == args.particles
+    assert board.particles == args.particles
 
+    # Plot the bar chart
     if args.plot:
-        # Plot the bar chart
-        plt.bar(range(args.slots), board.slots, align="center", alpha=0.5)
+        plt.style.use("ggplot")
+        plt.bar(range(args.slots), board.slots, align="center", alpha=0.8)
         plt.xticks(range(args.slots))
         plt.yticks(board.slots)
-        plt.title(f"Galton board simulation using {args.particles} " "threaded particles")
-        plt.xlabel("Cell Number")
-        plt.ylabel("Particle Number")
+        plt.title(f"Galton board simulation using {args.particles} threaded particles")
+        plt.xlabel("Slot")
+        plt.ylabel("Particle")
         plt.show()
 
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+        handlers=[logging.FileHandler("debug.log"), logging.StreamHandler()],
+    )
     main()

@@ -1,59 +1,35 @@
-"""
-Board module
-
-Author: David Oniani
-Date: 04/05/2019
-License: MIT License
-"""
-
-
-class Board(list):
-    """
-    This class implements a galton board
-    for particles.
-    """
+class Board:
+    """Implements a Galton board containing particles."""
 
     def __init__(self, size: int) -> None:
-        self._size = size
-        self._slots = [0] * size
-        self._levels = size // 2
+        """Initializes the board with the given size."""
 
-    def get_size(self) -> int:
-        return self._size
+        self.size: int = size
+        self.slots: list[int] = [0] * size
+        self.levels: int = size // 2
 
-    def set_size(self, new_size: int) -> None:
-        self._size = [0] * new_size
+    def __getitem__(self, idx: int) -> int:
+        """Gets a slot from the board."""
 
-    size = property(get_size, set_size)
+        return self.slots[idx]
 
-    def get_levels(self) -> int:
-        return self._levels
+    def __setitem__(self, idx: int, val: int) -> None:
+        """Sets a slot on the board."""
 
-    def set_levels(self, new_levels: int) -> None:
-        self._levels = new_levels
+        self.slots[idx] = val
 
-    levels = property(get_levels, set_levels)
+    def __str__(self) -> str:
+        """Implements a custom string representation for the board."""
 
-    def get_slots(self) -> list:
-        return self._slots
-
-    def set_slots(self, new_slots: list) -> None:
-        self._slots = new_slots
-
-    slots = property(get_slots, set_slots)
-
-    def __getitem__(self, index: int) -> int:
-        return self._slots[index]
-
-    def __setitem__(self, index: int, new_value: int) -> None:
-        self._slots[index] = new_value
-
-    def __str__(self) -> None:
-        result = "\033[41m|\033[0m"
-        for slot in self._slots:
-            result += f" \033[34m{slot} \033[41m|\033[0m"
-        return result
+        purple: str = "\033[95m"
+        result: list[str] = [f"{purple}|"]
+        for slot in self.slots:
+            result.append(f" {purple}{slot} {purple}|")
+        result.append("\033[0m")
+        return "".join(result)
 
     @property
-    def number_of_particles(self) -> int:
-        return sum(self._slots)
+    def particles(self) -> int:
+        """Gets the number of particles on the board."""
+
+        return sum(self.slots)

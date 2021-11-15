@@ -1,12 +1,5 @@
-"""
-Import statements for galton modules
+from .board import Board
+from .particle import Particle
 
-Author: David Oniani
-Date: 04/05/2019
-License: MIT License
-"""
 
-from galton.particle import Particle
-from galton.board import Board
-
-__all__ = ["Particle", "Board"]
+__all__ = ["Board", "Particle"]
